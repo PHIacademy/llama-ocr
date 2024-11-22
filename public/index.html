@@ -2,81 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced OCR Test</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <title>Llama OCR Test</title>
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-        }
-        .result {
-            border: 1px solid #ddd;
-            padding: 15px;
-            min-height: 100px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-            display: none;
-        }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; }
+        .result { margin-top: 20px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Enhanced OCR Test</h1>
+        <h1>Llama OCR Test</h1>
         
-        <div class="input-group">
-            <label for="apiKey">Together AI API Key:</label>
-            <input type="password" id="apiKey" required>
-        </div>
-        
-        <div class="input-group">
-            <label for="imageFile">Select Image:</label>
-            <input type="file" id="imageFile" accept="image/*" required>
-        </div>
-        
+        <input type="file" id="imageFile" accept="image/*">
         <button onclick="processImage()">Process Image</button>
-        
-        <div id="loading" class="loading">
-            Processing image, please wait...
-        </div>
-        
-        <div id="error" class="error"></div>
 
-        <div>
-            <h3>Result:</h3>
-            <div id="result" class="result">Results will appear here...</div>
-        </div>
+        <div id="result" class="result">Results will appear here...</div>
     </div>
 
     <script>
         async function processImage() {
-            const apiKey = document.getElementById('apiKey').value;
             const imageFile = document.getElementById('imageFile').files[0];
-            const loading = document.getElementById('loading');
-            const error = document.getElementById('error');
             const result = document.getElementById('result');
-
-            if (!apiKey || !imageFile) {
-                error.textContent = 'Please provide both API key and image file';
-                error.style.display = 'block';
+            
+            if (!imageFile) {
+                result.textContent = 'Please select an image file';
                 return;
             }
 
@@ -84,32 +32,17 @@
             formData.append('image', imageFile);
 
             try {
-                error.style.display = 'none';
-                loading.style.display = 'block';
                 result.textContent = 'Processing...';
-
+                
                 const response = await fetch('/process', {
                     method: 'POST',
-                    headers: {
-                        'X-API-Key': apiKey
-                    },
                     body: formData
                 });
 
                 const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Processing failed');
-                }
-
-                // Convert markdown to HTML for display
-                result.innerHTML = marked.parse(data.markdown);
-            } catch (err) {
-                error.textContent = err.message;
-                error.style.display = 'block';
-                result.textContent = 'An error occurred during processing';
-            } finally {
-                loading.style.display = 'none';
+                result.textContent = data.markdown;
+            } catch (error) {
+                result.textContent = 'Error: ' + error.message;
             }
         }
     </script>
