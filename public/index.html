@@ -2,49 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Llama OCR Test</title>
-    <style>
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; }
-        .result { margin-top: 20px; white-space: pre-wrap; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR: Document to Markdown</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Llama OCR Test</h1>
-        
-        <input type="file" id="imageFile" accept="image/*">
-        <button onclick="processImage()">Process Image</button>
-
-        <div id="result" class="result">Results will appear here...</div>
-    </div>
-
-    <script>
-        async function processImage() {
-            const imageFile = document.getElementById('imageFile').files[0];
-            const result = document.getElementById('result');
-            
-            if (!imageFile) {
-                result.textContent = 'Please select an image file';
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('image', imageFile);
-
-            try {
-                result.textContent = 'Processing...';
-                
-                const response = await fetch('/process', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                result.textContent = data.markdown;
-            } catch (error) {
-                result.textContent = 'Error: ' + error.message;
-            }
-        }
+    <div id="root"></div>
+    <script type="text/babel" src="/OCRInterface.js"></script>
+    <script type="text/babel">
+        ReactDOM.render(
+            <OCRInterface />,
+            document.getElementById('root')
+        );
     </script>
 </body>
 </html>
